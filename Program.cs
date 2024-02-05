@@ -1,47 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class IntStackCRUD
+class IntQueueCRUD
 {
-    private Stack<int> stack;
+    private Queue<int> queue;
 
-    public IntStackCRUD()
+    public IntQueueCRUD()
     {
-        stack = new Stack<int>();
+        queue = new Queue<int>();
     }
 
     public void Create(int item)
     {
-        stack.Push(item);
+        queue.Enqueue(item);
     }
 
     public int Read()
     {
-        if (stack.Count > 0)
-            return stack.Peek();
+        if (queue.Count > 0)
+            return queue.Peek();
         else
-            throw new InvalidOperationException("Stack is empty");
+            throw new InvalidOperationException("Queue is empty");
     }
 
     public void Update(int newItem)
     {
-        if (stack.Count > 0)
+        if (queue.Count > 0)
         {
-            stack.Pop();
-            stack.Push(newItem);
+            // Dequeue and enqueue the updated item
+            int currentFront = queue.Dequeue();
+            queue.Enqueue(newItem);
         }
         else
         {
-            throw new InvalidOperationException("Stack is empty");
+            throw new InvalidOperationException("Queue is empty");
         }
     }
 
     public int Delete()
     {
-        if (stack.Count > 0)
-            return stack.Pop();
+        if (queue.Count > 0)
+            return queue.Dequeue();
         else
-            throw new InvalidOperationException("Stack is empty");
+            throw new InvalidOperationException("Queue is empty");
     }
 }
 
@@ -49,22 +50,22 @@ class Program
 {
     static void Main(string[] args)
     {
-        IntStackCRUD myStack = new IntStackCRUD();
+        IntQueueCRUD myQueue = new IntQueueCRUD();
 
         // Create
-        myStack.Create(1);
-        myStack.Create(2);
-        myStack.Create(3);
+        myQueue.Create(1);
+        myQueue.Create(2);
+        myQueue.Create(3);
 
         // Read
-        Console.WriteLine("Top item in the stack: " + myStack.Read());
+        Console.WriteLine("Front item in the queue: " + myQueue.Read());
 
         // Update
-        myStack.Update(4);
-        Console.WriteLine("Top item in the stack after update: " + myStack.Read());
+        myQueue.Update(4);
+        Console.WriteLine("Front item after update: " + myQueue.Read());
 
         // Delete
-        Console.WriteLine("Deleted item from the stack: " + myStack.Delete());
-        Console.WriteLine("Top item in the stack after deletion: " + myStack.Read());
+        Console.WriteLine("Deleted item from the queue: " + myQueue.Delete());
+        Console.WriteLine("Front item after deletion: " + myQueue.Read());
     }
 }
