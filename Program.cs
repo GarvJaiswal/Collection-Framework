@@ -1,47 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class IntDictionaryCRUD
+class IntLinkedListCRUD
 {
-    private Dictionary<int, int> dictionary;
+    private LinkedList<int> linkedList;
 
-    public IntDictionaryCRUD()
+    public IntLinkedListCRUD()
     {
-        dictionary = new Dictionary<int, int>();
+        linkedList = new LinkedList<int>();
     }
 
-    public void Create(int key, int value)
+    public void Create(int value)
     {
-        if (!dictionary.ContainsKey(key))
-            dictionary.Add(key, value);
-        else
-            Console.WriteLine("Key already exists. Cannot add.");
+        linkedList.AddLast(value);
     }
 
-    public int Read(int key)
+    public int Read()
     {
-        int value;
-        if (dictionary.TryGetValue(key, out value))
-            return value;
+        if (linkedList.Count > 0)
+            return linkedList.First.Value;
         else
-            Console.WriteLine("Key does not exist.");
-        return -1; // Or return default(int);
+        {
+            Console.WriteLine("Linked list is empty.");
+            return default(int); // Or return -1 or any default value you prefer
+        }
     }
 
-    public void Update(int key, int newValue)
+    public void Update(int newValue)
     {
-        if (dictionary.ContainsKey(key))
-            dictionary[key] = newValue;
+        if (linkedList.Count > 0)
+            linkedList.First.Value = newValue;
         else
-            Console.WriteLine("Key does not exist. Cannot update.");
+            Console.WriteLine("Linked list is empty. Cannot update.");
     }
 
-    public void Delete(int key)
+    public void Delete()
     {
-        if (dictionary.ContainsKey(key))
-            dictionary.Remove(key);
+        if (linkedList.Count > 0)
+            linkedList.RemoveFirst();
         else
-            Console.WriteLine("Key does not exist. Cannot delete.");
+            Console.WriteLine("Linked list is empty. Cannot delete.");
     }
 }
 
@@ -49,23 +47,22 @@ class Program
 {
     static void Main(string[] args)
     {
-        IntDictionaryCRUD myDictionary = new IntDictionaryCRUD();
+        IntLinkedListCRUD myLinkedList = new IntLinkedListCRUD();
 
         // Create
-        myDictionary.Create(1, 10);
-        myDictionary.Create(2, 20);
-        myDictionary.Create(3, 30);
+        myLinkedList.Create(1);
+        myLinkedList.Create(2);
+        myLinkedList.Create(3);
 
         // Read
-        Console.WriteLine("Value for key 1: " + myDictionary.Read(1));
-        Console.WriteLine("Value for key 4: " + myDictionary.Read(4)); // Key does not exist.
+        Console.WriteLine("First value in the linked list: " + myLinkedList.Read());
 
         // Update
-        myDictionary.Update(2, 25);
-        Console.WriteLine("Updated value for key 2: " + myDictionary.Read(2));
+        myLinkedList.Update(4);
+        Console.WriteLine("First value after update: " + myLinkedList.Read());
 
         // Delete
-        myDictionary.Delete(3);
-        Console.WriteLine("Value for key 3 after deletion: " + myDictionary.Read(3)); // Key does not exist.
+        myLinkedList.Delete();
+        Console.WriteLine("First value after deletion: " + myLinkedList.Read());
     }
 }
