@@ -1,48 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class IntQueueCRUD
+class IntHashSetCRUD
 {
-    private Queue<int> queue;
+    private HashSet<int> hashSet;
 
-    public IntQueueCRUD()
+    public IntHashSetCRUD()
     {
-        queue = new Queue<int>();
+        hashSet = new HashSet<int>();
     }
 
     public void Create(int item)
     {
-        queue.Enqueue(item);
+        hashSet.Add(item);
     }
 
-    public int Read()
+    public bool Read(int item)
     {
-        if (queue.Count > 0)
-            return queue.Peek();
-        else
-            throw new InvalidOperationException("Queue is empty");
+        return hashSet.Contains(item);
     }
 
-    public void Update(int newItem)
+    public bool Update(int currentItem, int newItem)
     {
-        if (queue.Count > 0)
+        if (hashSet.Contains(currentItem))
         {
-            // Dequeue and enqueue the updated item
-            int currentFront = queue.Dequeue();
-            queue.Enqueue(newItem);
+            hashSet.Remove(currentItem);
+            hashSet.Add(newItem);
+            return true;
         }
         else
         {
-            throw new InvalidOperationException("Queue is empty");
+            return false;
         }
     }
 
-    public int Delete()
+    public bool Delete(int item)
     {
-        if (queue.Count > 0)
-            return queue.Dequeue();
-        else
-            throw new InvalidOperationException("Queue is empty");
+        return hashSet.Remove(item);
     }
 }
 
@@ -50,22 +44,28 @@ class Program
 {
     static void Main(string[] args)
     {
-        IntQueueCRUD myQueue = new IntQueueCRUD();
+        IntHashSetCRUD myHashSet = new IntHashSetCRUD();
 
         // Create
-        myQueue.Create(1);
-        myQueue.Create(2);
-        myQueue.Create(3);
+        myHashSet.Create(1);
+        myHashSet.Create(2);
+        myHashSet.Create(3);
 
         // Read
-        Console.WriteLine("Front item in the queue: " + myQueue.Read());
+        Console.WriteLine("Does 2 exist in the HashSet? " + myHashSet.Read(2));
 
         // Update
-        myQueue.Update(4);
-        Console.WriteLine("Front item after update: " + myQueue.Read());
+        bool updated = myHashSet.Update(2, 4);
+        if (updated)
+            Console.WriteLine("Updated 2 to 4");
+        else
+            Console.WriteLine("Failed to update");
 
         // Delete
-        Console.WriteLine("Deleted item from the queue: " + myQueue.Delete());
-        Console.WriteLine("Front item after deletion: " + myQueue.Read());
+        bool deleted = myHashSet.Delete(2);
+        if (deleted)
+            Console.WriteLine("Deleted 2 from HashSet");
+        else
+            Console.WriteLine("Failed to delete");
     }
 }
