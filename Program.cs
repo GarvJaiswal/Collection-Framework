@@ -1,42 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class IntHashSetCRUD
+class IntDictionaryCRUD
 {
-    private HashSet<int> hashSet;
+    private Dictionary<int, int> dictionary;
 
-    public IntHashSetCRUD()
+    public IntDictionaryCRUD()
     {
-        hashSet = new HashSet<int>();
+        dictionary = new Dictionary<int, int>();
     }
 
-    public void Create(int item)
+    public void Create(int key, int value)
     {
-        hashSet.Add(item);
-    }
-
-    public bool Read(int item)
-    {
-        return hashSet.Contains(item);
-    }
-
-    public bool Update(int currentItem, int newItem)
-    {
-        if (hashSet.Contains(currentItem))
-        {
-            hashSet.Remove(currentItem);
-            hashSet.Add(newItem);
-            return true;
-        }
+        if (!dictionary.ContainsKey(key))
+            dictionary.Add(key, value);
         else
-        {
-            return false;
-        }
+            Console.WriteLine("Key already exists. Cannot add.");
     }
 
-    public bool Delete(int item)
+    public int Read(int key)
     {
-        return hashSet.Remove(item);
+        int value;
+        if (dictionary.TryGetValue(key, out value))
+            return value;
+        else
+            Console.WriteLine("Key does not exist.");
+        return -1; // Or return default(int);
+    }
+
+    public void Update(int key, int newValue)
+    {
+        if (dictionary.ContainsKey(key))
+            dictionary[key] = newValue;
+        else
+            Console.WriteLine("Key does not exist. Cannot update.");
+    }
+
+    public void Delete(int key)
+    {
+        if (dictionary.ContainsKey(key))
+            dictionary.Remove(key);
+        else
+            Console.WriteLine("Key does not exist. Cannot delete.");
     }
 }
 
@@ -44,28 +49,23 @@ class Program
 {
     static void Main(string[] args)
     {
-        IntHashSetCRUD myHashSet = new IntHashSetCRUD();
+        IntDictionaryCRUD myDictionary = new IntDictionaryCRUD();
 
         // Create
-        myHashSet.Create(1);
-        myHashSet.Create(2);
-        myHashSet.Create(3);
+        myDictionary.Create(1, 10);
+        myDictionary.Create(2, 20);
+        myDictionary.Create(3, 30);
 
         // Read
-        Console.WriteLine("Does 2 exist in the HashSet? " + myHashSet.Read(2));
+        Console.WriteLine("Value for key 1: " + myDictionary.Read(1));
+        Console.WriteLine("Value for key 4: " + myDictionary.Read(4)); // Key does not exist.
 
         // Update
-        bool updated = myHashSet.Update(2, 4);
-        if (updated)
-            Console.WriteLine("Updated 2 to 4");
-        else
-            Console.WriteLine("Failed to update");
+        myDictionary.Update(2, 25);
+        Console.WriteLine("Updated value for key 2: " + myDictionary.Read(2));
 
         // Delete
-        bool deleted = myHashSet.Delete(2);
-        if (deleted)
-            Console.WriteLine("Deleted 2 from HashSet");
-        else
-            Console.WriteLine("Failed to delete");
+        myDictionary.Delete(3);
+        Console.WriteLine("Value for key 3 after deletion: " + myDictionary.Read(3)); // Key does not exist.
     }
 }
